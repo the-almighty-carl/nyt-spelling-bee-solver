@@ -1,45 +1,81 @@
-# NYT spelling bee puzzle solver
-# made by taargle with love
-# and annyoance
+# main.py
+# script for solving New York Times "spelling bee" puzzles
+# made by elliott black (@demonpuncher on repl.it) ~2018
+
 with open("words.txt") as word_file:
     actual_words = set(word.strip().lower() for word in word_file)
-    # takes the word document and turns it into a set to use
-
-validLetters = set()
+    # reads words.txt and makes a table out of it
 
 
+# cheating_time - this actually does the solving
+# inputs:
+#   wordset - table, preferably of words
+#   letterset - letters in outer ring of puzzle
+#   centerLetter - exactly what it sounds like
 def cheating_time(wordset, letterset, centerLetter):
-    shit = set()
-    output = set()
+    junk = set()  # temporary holding zone
+    output = set()  # exactly what it sounds like
     for word in wordset:
-        tempset = set(word)
+        tempset = set(word)  # turn word into set
         if tempset - letterset == set() and len(word) >= 5:
-            shit.add(word)
-            # makes sure word can be made and is 5+ letters long
-    for thing in shit:
-        tempset2 = set(thing)
+            junk.add(word)
+            # add to temporary set if letters and length are valid
+    for thing in junk:
+        tempset2 = set(thing)  # yep, we're doing this again
         if centerLetter in tempset2:
             output.add(thing)
-            # makes sure the center letter is in there too
-    finalWordBarf = ', '.join(output)
-    # final word barf is exactly what it says
-    print("Finished! Words found: ", finalWordBarf)
+            # add to output set if center letter is present
+    finalWordDump = ', '.join(output)
+    print("Finished! Words found: ", finalWordDump)
+    # makes the set of output words pretty and prints it
 
 
-print("Welcome to the NYT Spelling Bee Solver, fellow cheater.")
-print("What letters 'ya got? (lowercase please)")
+# interface_handler - handles interaction with user
+# inputs:
+#   wordset - set made from words.txt
+def interface_handler(wordset):
+    letterSet = set()
+    print("NYTSBPS Loaded. Ready to solve.")
+    print("NYTSBPS Awaiting inputs...")  # flair for user
+    centerLetter = input("Center Letter: ").lower()[0]
+    otherLetters = input("Outer Letters: ").lower()
+    i = 0  # controls below while loop
+    while i < 6:
+        for letter in otherLetters:
+            if i >= 6:
+                break  # exits if more than six letters are read
+            elif letter != "," and letter != " ":
+                letterSet.add(letter)  # does what it says
+                i = i + 1
+            print(i, " ", letter)
+    print("Running NYTSBPS for letters: ", ", ".join(letterSet),
+          "with center letter ", centerLetter)
+    letterSet.add(centerLetter)
+    print("Solving...")  # see last comment
+    cheating_time(wordset, letterSet, centerLetter)
+    print("\n\n")
+    loopControl = input("Solve another? (y/n): ").lower()[0]
+    if loopControl == "y":  # this controls whether or not
+        print("Reloading NYTSBPS...")  # main runs this again
+    elif loopControl == "n":
+        print("Exiting NYTSBPS...")
+    else:
+        print("PEBKAC Error! Exiting NYTSBPS...")
+        return "n"
+    return loopControl
 
-LCEN = input("Center Letter: ")
-validLetters.add(LCEN)
-validLetters.add(input("Letter One: "))
-validLetters.add(input("Letter Two: "))
-validLetters.add(input("Letter Three: "))
-validLetters.add(input("Letter Four: "))
-validLetters.add(input("Letter Five: "))
-validLetters.add(input("Letter Six: "))
-# asks for the letters and adds them to the set which we're about to use to run through the english language as of 2004
 
-print("Your set of letters is: ", validLetters)
-print("Now solving... (this might take an entire hour!)")
+# main - exactly what it sounds like
+#inputs:
+# words - word list
+def main(words):
+    foo = "bar"  # controls main program loop
+    print("Loading NYTSBPS...")
+    while foo == "bar":
+        controller = interface_handler(words)
+        if controller == "n":
+            foo = "spam and eggs"
+    print("NYTSBPS exited. You may close this window.")
 
-cheating_time(actual_words, validLetters, LCEN)
+
+main(actual_words)
